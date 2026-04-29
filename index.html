@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Desierto Florido — Cuenca del Río Huasco | GeoIA</title>
+  <meta name="description" content="Dinámica espacio-temporal del bloom (Desierto Florido) en la cuenca del río Huasco, Chile. Análisis con NDVI MODIS 2000–2026." />
+  <meta name="author" content="Guillermo Fuentes Jaque" />
+  <meta property="og:title" content="Desierto Florido — Cuenca del Río Huasco" />
+  <meta property="og:description" content="Dinámica espacio-temporal del bloom usando NDVI MODIS 2000–2026. Google Earth Engine · Python · Cartografía científica." />
+  <meta property="og:type" content="website" />
+  <style>
+    :root {
+      --green:   #2d6a4f;
+      --green2:  #40916c;
+      --green3:  #74c69d;
+      --sand:    #f8f3e8;
+      --sand2:   #ede0c4;
+      --brown:   #7d4e24;
+      --dark:    #1b2a1f;
+      --text:    #2c3e2d;
+      --gray:    #6b7280;
+      --white:   #ffffff;
+      --radius:  8px;
+      --shadow:  0 2px 12px rgba(0,0,0,0.10);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--sand);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ---- NAV ---- */
+    nav {
+      background: var(--dark);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav .brand {
+      color: var(--green3);
+      font-size: 1.05rem;
+      font-family: monospace;
+      letter-spacing: 0.04em;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+    nav ul a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-family: sans-serif;
+      transition: color 0.2s;
+    }
+    nav ul a:hover { color: var(--green3); }
+
+    /* ---- HERO ---- */
+    .hero {
+      background: linear-gradient(160deg, var(--dark) 0%, #1e3a2a 60%, #2d5a3a 100%);
+      color: var(--white);
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+    }
+    .hero .tag {
+      display: inline-block;
+      background: rgba(116,198,157,0.2);
+      color: var(--green3);
+      border: 1px solid var(--green3);
+      border-radius: 20px;
+      padding: 0.25rem 0.9rem;
+      font-size: 0.78rem;
+      font-family: sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      line-height: 1.2;
+      max-width: 800px;
+      margin: 0 auto 1rem;
+    }
+    .hero h1 em {
+      color: var(--green3);
+      font-style: normal;
+    }
+    .hero p {
+      font-size: 1.05rem;
+      color: #c5ddc9;
+      max-width: 650px;
+      margin: 0 auto 2rem;
+      font-family: sans-serif;
+    }
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .hero-badges a img { height: 22px; }
+    .btn {
+      display: inline-block;
+      padding: 0.65rem 1.6rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-family: sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: var(--green2);
+      color: var(--white);
+    }
+    .btn-primary:hover { background: var(--green); }
+    .btn-outline {
+      border: 2px solid var(--green3);
+      color: var(--green3);
+    }
+    .btn-outline:hover {
+      background: rgba(116,198,157,0.15);
+    }
+    .hero-actions {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ---- SECTIONS ---- */
+    section { padding: 3.5rem 2rem; }
+    .container { max-width: 960px; margin: 0 auto; }
+    h2 {
+      font-size: 1.6rem;
+      color: var(--green);
+      margin-bottom: 0.4rem;
+    }
+    .section-lead {
+      color: var(--gray);
+      font-family: sans-serif;
+      margin-bottom: 2rem;
+    }
+    .divider {
+      width: 48px;
+      height: 3px;
+      background: var(--green3);
+      border: none;
+      margin: 0.6rem 0 1.5rem;
+    }
+
+    /* ---- STUDY AREA GRID ---- */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .info-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      box-shadow: var(--shadow);
+      border-top: 3px solid var(--green3);
+    }
+    .info-card .label {
+      font-size: 0.72rem;
+      font-family: sans-serif;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 0.3rem;
+    }
+    .info-card .value {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    /* ---- METHODOLOGY ---- */
+    .method-bg { background: var(--white); }
+    .method-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+    }
+    .method-step {
+      background: var(--sand);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      border-left: 4px solid var(--green2);
+    }
+    .method-step .num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--green3);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .method-step h3 {
+      font-size: 0.95rem;
+      color: var(--green);
+      margin-bottom: 0.3rem;
+    }
+    .method-step p {
+      font-size: 0.85rem;
+      color: var(--gray);
+      font-family: sans-serif;
+    }
+
+    /* ---- DATA TABLE ---- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: sans-serif;
+      font-size: 0.88rem;
+      margin-top: 1.5rem;
+    }
+    thead tr { background: var(--green); color: var(--white); }
+    thead th { padding: 0.7rem 1rem; text-align: left; }
+    tbody tr:nth-child(even) { background: var(--white); }
+    tbody tr:nth-child(odd) { background: var(--sand); }
+    tbody td { padding: 0.6rem 1rem; }
+    tbody tr:hover { background: #d4eadc; }
+
+    /* ---- BLOOM DEFINITION ---- */
+    .bloom-box {
+      background: var(--dark);
+      color: var(--green3);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.8rem;
+      font-family: monospace;
+      font-size: 0.95rem;
+      margin: 1.5rem 0;
+      line-height: 1.8;
+    }
+    .bloom-box .comment { color: #666; }
+
+    /* ---- NOTEBOOKS ---- */
+    .notebooks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.4rem;
+      margin-top: 1.5rem;
+    }
+    .notebook-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+    .notebook-card .nb-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .notebook-card h3 {
+      font-size: 1rem;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+    .notebook-card p {
+      font-size: 0.85rem;
+      color: var(--gray);
+      font-family: sans-serif;
+      margin-bottom: 1rem;
+    }
+    .notebook-card ul {
+      list-style: none;
+      margin-bottom: 1.2rem;
+    }
+    .notebook-card ul li {
+      font-size: 0.82rem;
+      font-family: sans-serif;
+      color: var(--text);
+      padding: 0.2rem 0;
+      padding-left: 1rem;
+      position: relative;
+    }
+    .notebook-card ul li::before {
+      content: "›";
+      position: absolute;
+      left: 0;
+      color: var(--green2);
+    }
+
+    /* ---- REFERENCES ---- */
+    .refs-bg { background: #f0ede5; }
+    .ref-list {
+      list-style: none;
+      margin-top: 1.5rem;
+    }
+    .ref-list li {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 0.9rem 1.2rem;
+      margin-bottom: 0.7rem;
+      font-family: sans-serif;
+      font-size: 0.85rem;
+      border-left: 3px solid var(--green3);
+    }
+    .ref-list li a {
+      color: var(--green2);
+      text-decoration: none;
+    }
+    .ref-list li a:hover { text-decoration: underline; }
+
+    /* ---- CITE SECTION ---- */
+    .cite-box {
+      background: var(--dark);
+      color: #c5ddc9;
+      border-radius: var(--radius);
+      padding: 1.2rem 1.6rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      margin-top: 1.2rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* ---- AUTHOR ---- */
+    .author-bg { background: var(--green); color: var(--white); text-align: center; }
+    .author-bg h2 { color: var(--white); }
+    .author-bg .divider { background: rgba(255,255,255,0.4); margin: 0.6rem auto 1.5rem; }
+    .author-bg p { font-family: sans-serif; color: rgba(255,255,255,0.85); margin-bottom: 0.5rem; }
+    .author-bg a {
+      color: var(--green3);
+      text-decoration: none;
+    }
+    .author-bg a:hover { text-decoration: underline; }
+
+    /* ---- FOOTER ---- */
+    footer {
+      background: var(--dark);
+      color: #777;
+      text-align: center;
+      padding: 1.4rem 2rem;
+      font-family: sans-serif;
+      font-size: 0.8rem;
+    }
+    footer a { color: var(--green3); text-decoration: none; }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 600px) {
+      nav ul { display: none; }
+      .hero { padding: 3.5rem 1rem 2.5rem; }
+      section { padding: 2.5rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="brand">geoia-bloom-huasco</span>
+  <ul>
+    <li><a href="#area">Área de estudio</a></li>
+    <li><a href="#metodologia">Metodología</a></li>
+    <li><a href="#notebooks">Notebooks</a></li>
+    <li><a href="#referencias">Referencias</a></li>
+    <li><a href="https://github.com/djwillichile/geoia-bloom-huasco">GitHub</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="tag">Teledetección · Ecología árida · Cuenca del Huasco</div>
+  <h1>Dinámica espacio-temporal del <em>Desierto Florido</em><br>en la cuenca del río Huasco</h1>
+  <p>Detección y cuantificación de eventos de bloom mediante series temporales de NDVI MODIS (2000–2026) con Google Earth Engine.</p>
+  <div class="hero-badges">
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License" /></a>
+    <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+" /></a>
+    <a href="https://earthengine.google.com/"><img src="https://img.shields.io/badge/Google%20Earth%20Engine-4285F4?logo=google&logoColor=white" alt="GEE" /></a>
+  </div>
+  <div class="hero-actions">
+    <a href="https://colab.research.google.com/github/djwillichile/geoia-bloom-huasco/blob/main/notebooks/dinamica_bloom_huasco_ndvi.ipynb" class="btn btn-primary">Abrir en Colab</a>
+    <a href="https://github.com/djwillichile/geoia-bloom-huasco" class="btn btn-outline">Ver en GitHub</a>
+  </div>
+</header>
+
+<!-- DESCRIPCIÓN -->
+<section>
+  <div class="container">
+    <h2>Descripción del proyecto</h2>
+    <hr class="divider" />
+    <p class="section-lead">Flujo de trabajo reproducible para el análisis de la vegetación efímera asociada al <strong>Desierto Florido</strong> en la cuenca hidrográfica del río Huasco, Región de Atacama, Chile.</p>
+    <p>El análisis combina <strong>Google Earth Engine (API de Python)</strong>, procesamiento geoespacial y visualización cartográfica para construir una climatología estacional de NDVI, calcular anomalías como indicador de bloom, detectar eventos de floración y generar cartografía profesional. La serie temporal abarca el período <strong>2000–2026</strong> con resolución espacial de 250 m y temporal de 16 días.</p>
+  </div>
+</section>
+
+<!-- ÁREA DE ESTUDIO -->
+<section id="area" style="background: var(--white)">
+  <div class="container">
+    <h2>Área de estudio</h2>
+    <hr class="divider" />
+    <p class="section-lead">La cuenca del río Huasco se ubica en el desierto de Atacama, una de las zonas áridas más extremas del planeta y epicentro del fenómeno del Desierto Florido.</p>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="label">Cuenca</div>
+        <div class="value">Río Huasco</div>
+      </div>
+      <div class="info-card">
+        <div class="label">Región</div>
+        <div class="value">Atacama, Chile</div>
+      </div>
+      <div class="info-card">
+        <div class="label">Coordenadas</div>
+        <div class="value">28.5°S · 70.5°W</div>
+      </div>
+      <div class="info-card">
+        <div class="label">Período</div>
+        <div class="value">2000 – 2026</div>
+      </div>
+      <div class="info-card">
+        <div class="label">Resolución NDVI</div>
+        <div class="value">250 m · 16 días</div>
+      </div>
+      <div class="info-card">
+        <div class="label">Delimitación</div>
+        <div class="value">HydroBASINS L6</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATOS -->
+<section id="datos">
+  <div class="container">
+    <h2>Datos utilizados</h2>
+    <hr class="divider" />
+    <table>
+      <thead>
+        <tr>
+          <th>Dataset</th>
+          <th>Fuente</th>
+          <th>Resolución</th>
+          <th>Período</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>MOD13Q1</strong> (NDVI 16 días)</td>
+          <td>MODIS / NASA — GEE</td>
+          <td>250 m</td>
+          <td>2000–2026</td>
+        </tr>
+        <tr>
+          <td><strong>SRTM</strong> (DEM)</td>
+          <td>USGS — GEE</td>
+          <td>30 m</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>FAO/GAUL</strong> (límites admin.)</td>
+          <td>FAO — GEE</td>
+          <td>—</td>
+          <td>2015</td>
+        </tr>
+        <tr>
+          <td><strong>HydroBASINS</strong></td>
+          <td>WWF/HydroSHEDS — GEE</td>
+          <td>—</td>
+          <td>v1</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- METODOLOGÍA -->
+<section id="metodologia" class="method-bg">
+  <div class="container">
+    <h2>Metodología</h2>
+    <hr class="divider" />
+    <p class="section-lead">Flujo de procesamiento basado en la definición de anomalías de NDVI respecto de una climatología estacional de 16 días.</p>
+
+    <div class="bloom-box">
+<span class="comment">// Definición de bloom (doble condición)</span>
+Anomaly = NDVI_obs − NDVI_clim(slot16)
+Bloom   = (NDVI &gt; 0.20) AND (Anomaly &gt; 0.02)
+
+<span class="comment">// slot16 = floor(DOY / 16)  →  23 intervalos por año</span>
+    </div>
+
+    <div class="method-steps">
+      <div class="method-step">
+        <div class="num">01</div>
+        <h3>Preprocesamiento</h3>
+        <p>Filtro de calidad SummaryQA ≤ 1, escala NDVI × 0.0001, asignación de slot16 por día del año.</p>
+      </div>
+      <div class="method-step">
+        <div class="num">02</div>
+        <h3>Climatología estacional</h3>
+        <p>Media de NDVI por slot16 sobre 2000–2026: 23 imágenes de referencia que capturan la fenología intra-anual.</p>
+      </div>
+      <div class="method-step">
+        <div class="num">03</div>
+        <h3>Detección de bloom</h3>
+        <p>Anomalía positiva respecto de la climatología + umbral NDVI &gt; 0.20 para clasificación binaria de píxeles.</p>
+      </div>
+      <div class="method-step">
+        <div class="num">04</div>
+        <h3>Métricas de cuenca</h3>
+        <p>Área bloom (km²), NDVI medio y desv. estándar en píxeles bloom y en toda la cuenca, anomalía media.</p>
+      </div>
+      <div class="method-step">
+        <div class="num">05</div>
+        <h3>Detección de eventos</h3>
+        <p>Suavizado Savitzky-Golay (ventana 11, orden 3) y detección de picos con scipy.signal.find_peaks.</p>
+      </div>
+      <div class="method-step">
+        <div class="num">06</div>
+        <h3>Cartografía</h3>
+        <p>Layout de dos paneles (DEM + NDVI medio) con hillshade, rosa de vientos, escala y leyendas. Exportación a 300 DPI.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOTEBOOKS -->
+<section id="notebooks">
+  <div class="container">
+    <h2>Notebooks</h2>
+    <hr class="divider" />
+    <p class="section-lead">Flujo de trabajo abierto y reproducible, ejecutable localmente o en Google Colab sin instalación previa.</p>
+    <div class="notebooks-grid">
+      <div class="notebook-card">
+        <div class="nb-icon">📊</div>
+        <h3>Dinámica Bloom NDVI</h3>
+        <p>Análisis principal: climatología, anomalías, detección de eventos y frecuencia espacial del bloom.</p>
+        <ul>
+          <li>Inicialización GEE y área de estudio</li>
+          <li>Climatología estacional por slot16</li>
+          <li>Series temporales 2000–2026</li>
+          <li>Detección de picos (Savitzky-Golay)</li>
+          <li>Frecuencia espacial del bloom</li>
+        </ul>
+        <a href="https://colab.research.google.com/github/djwillichile/geoia-bloom-huasco/blob/main/notebooks/dinamica_bloom_huasco_ndvi.ipynb" class="btn btn-primary" style="font-size:0.82rem">
+          Abrir en Colab
+        </a>
+      </div>
+      <div class="notebook-card">
+        <div class="nb-icon">🗺️</div>
+        <h3>Cartografía Huasco</h3>
+        <p>Layout cartográfico profesional tipo publicación con DEM hillshade y NDVI medio.</p>
+        <ul>
+          <li>DEM SRTM 30 m con hillshade</li>
+          <li>NDVI medio climatológico MODIS</li>
+          <li>Dos paneles + elementos cartográficos</li>
+          <li>Rosa de vientos y barra de escala</li>
+          <li>Exportación PNG 300 DPI</li>
+        </ul>
+        <a href="https://colab.research.google.com/github/djwillichile/geoia-bloom-huasco/blob/main/notebooks/cartografia_huasco_layout.ipynb" class="btn btn-primary" style="font-size:0.82rem">
+          Abrir en Colab
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REFERENCIAS -->
+<section id="referencias" class="refs-bg">
+  <div class="container">
+    <h2>Referencias</h2>
+    <hr class="divider" />
+    <p class="section-lead">Bibliografía principal del proyecto. El archivo BibTeX completo (~25 referencias) está en <code>docs/references.bib</code>.</p>
+    <ul class="ref-list">
+      <li>Didan, K. (2021). MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN Grid V061. NASA EOSDIS Land Processes DAAC. <a href="https://doi.org/10.5067/MODIS/MOD13Q1.061">doi:10.5067/MODIS/MOD13Q1.061</a></li>
+      <li>Gorelick, N. et al. (2017). Google Earth Engine: Planetary-scale geospatial analysis for everyone. <em>Remote Sensing of Environment</em>, 202, 18–27. <a href="https://doi.org/10.1016/j.rse.2017.06.031">doi:10.1016/j.rse.2017.06.031</a></li>
+      <li>Vidiella, P.E., Armesto, J.J. & Gutiérrez, J.R. (1999). Vegetation changes and sequential flowering after rain in the southern Atacama Desert. <em>Journal of Arid Environments</em>, 43(4), 449–458. <a href="https://doi.org/10.1006/jare.1999.0563">doi:10.1006/jare.1999.0563</a></li>
+      <li>Garreaud, R.D. & Rutllant, J. (2003). Factores climatológicos relevantes para el florecimiento del desierto en el norte de Chile. <em>Revista Chilena de Historia Natural</em>, 76, 611–628. <a href="https://doi.org/10.4067/S0716-078X2003000400011">doi:10.4067/S0716-078X2003000400011</a></li>
+      <li>Squeo, F.A. et al. (2008). Exotic plant species dynamics during the ENSO cycle in the Atacama Desert. <em>Journal of Arid Environments</em>, 72(4), 459–469. <a href="https://doi.org/10.1016/j.jaridenv.2007.06.007">doi:10.1016/j.jaridenv.2007.06.007</a></li>
+      <li>Huete, A. et al. (2002). Overview of the radiometric and biophysical performance of the MODIS vegetation indices. <em>Remote Sensing of Environment</em>, 83(1-2), 195–213. <a href="https://doi.org/10.1016/S0034-4257(02)00096-2">doi:10.1016/S0034-4257(02)00096-2</a></li>
+      <li>Farr, T.G. et al. (2007). The Shuttle Radar Topography Mission. <em>Reviews of Geophysics</em>, 45(2). <a href="https://doi.org/10.1029/2005RG000183">doi:10.1029/2005RG000183</a></li>
+      <li>Savitzky, A. & Golay, M.J.E. (1964). Smoothing and differentiation of data by simplified least squares procedures. <em>Analytical Chemistry</em>, 36(8), 1627–1639. <a href="https://doi.org/10.1021/ac60214a047">doi:10.1021/ac60214a047</a></li>
+      <li>Lehner, B., Verdin, K. & Jarvis, A. (2008). New global hydrography derived from spaceborne elevation data. <em>Eos</em>, 89(10), 93–94. <a href="https://doi.org/10.1029/2008EO100001">doi:10.1029/2008EO100001</a></li>
+      <li>Virtanen, P. et al. (2020). SciPy 1.0: Fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, 17, 261–272. <a href="https://doi.org/10.1038/s41592-019-0686-2">doi:10.1038/s41592-019-0686-2</a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- CITAR -->
+<section>
+  <div class="container">
+    <h2>Cómo citar este repositorio</h2>
+    <hr class="divider" />
+    <p>Si utilizas este trabajo en una publicación científica, por favor cita el repositorio usando la siguiente referencia o el archivo <a href="https://github.com/djwillichile/geoia-bloom-huasco/blob/main/CITATION.cff"><code>CITATION.cff</code></a>:</p>
+    <pre class="cite-box">Fuentes Jaque, G. (2025). geoia-bloom-huasco: Dinámica espacio-temporal del
+Desierto Florido en la cuenca del río Huasco (NDVI MODIS 2000–2026).
+GitHub. https://github.com/djwillichile/geoia-bloom-huasco</pre>
+  </div>
+</section>
+
+<!-- AUTOR -->
+<section class="author-bg">
+  <div class="container">
+    <h2>Autor</h2>
+    <hr class="divider" />
+    <p><strong>Guillermo Fuentes Jaque</strong></p>
+    <p>Científico de datos geoespaciales · Consultor ambiental · Docente universitario</p>
+    <p><a href="https://github.com/djwillichile">GitHub: @djwillichile</a></p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    <a href="https://github.com/djwillichile/geoia-bloom-huasco">geoia-bloom-huasco</a> ·
+    Licencia MIT · Desarrollado con Google Earth Engine, datos abiertos MODIS/NASA y Python
+  </p>
+</footer>
+
+</body>
+</html>
