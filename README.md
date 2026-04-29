@@ -2,6 +2,12 @@
 
 **Dinámica espacio-temporal del bloom (Desierto Florido) en la cuenca del río Huasco, Chile — Análisis con NDVI MODIS**
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
+[![Google Earth Engine](https://img.shields.io/badge/Google%20Earth%20Engine-4285F4?logo=google&logoColor=white)](https://earthengine.google.com/)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/djwillichile/geoia-bloom-huasco/blob/main/notebooks/dinamica_bloom_huasco_ndvi.ipynb)
+[![Web](https://img.shields.io/badge/Web-GitHub%20Pages-222?logo=github)](https://djwillichile.github.io/geoia-bloom-huasco/)
+
 ---
 
 ## Descripción
@@ -83,23 +89,26 @@ MOD13Q1 (2000-2026)
 ```
 geoia-bloom-huasco/
 ├── README.md
+├── CITATION.cff                             # Metadatos de citación
 ├── LICENSE
 ├── .gitignore
-├── requirements.txt
+├── requirements.txt                         # Dependencias pip
+├── environment.yml                          # Entorno conda reproducible
 ├── notebooks/
-│   ├── dinamica_bloom_huasco_ndvi.ipynb    # Análisis principal de bloom
-│   └── cartografia_huasco_layout.ipynb     # Layout cartográfico profesional
+│   ├── dinamica_bloom_huasco_ndvi.ipynb     # Análisis principal de bloom
+│   └── cartografia_huasco_layout.ipynb      # Layout cartográfico profesional
 ├── data/                                    # Datos exportados (CSV, GeoJSON)
-│   └── .gitkeep
 ├── figures/                                 # Figuras y mapas exportados
-│   └── .gitkeep
-└── docs/                                    # Documentación adicional
-    └── metodologia.md
+└── docs/
+    ├── metodologia.md                       # Metodología detallada
+    └── references.bib                       # Bibliografía en formato BibTeX
 ```
 
 ## Notebooks
 
 ### 1. `dinamica_bloom_huasco_ndvi.ipynb`
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/djwillichile/geoia-bloom-huasco/blob/main/notebooks/dinamica_bloom_huasco_ndvi.ipynb)
 
 Notebook principal que implementa el flujo completo de análisis:
 
@@ -115,6 +124,8 @@ Notebook principal que implementa el flujo completo de análisis:
 
 ### 2. `cartografia_huasco_layout.ipynb`
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/djwillichile/geoia-bloom-huasco/blob/main/notebooks/cartografia_huasco_layout.ipynb)
+
 Notebook de cartografía profesional con layout tipo publicación:
 
 - Descarga de capas raster desde GEE (DEM SRTM, NDVI medio MODIS)
@@ -125,30 +136,23 @@ Notebook de cartografía profesional con layout tipo publicación:
 
 ## Requisitos
 
-### Entorno
+### Entorno conda (recomendado)
 
-- Python 3.8+
-- Cuenta de Google Earth Engine autenticada
-
-### Dependencias principales
-
-```
-earthengine-api
-geemap
-matplotlib
-numpy
-pandas
-scipy
-geopandas
-cartopy
-Pillow
+```bash
+conda env create -f environment.yml
+conda activate geoia-bloom-huasco
 ```
 
-Para instalar todas las dependencias:
+### Entorno pip
 
 ```bash
 pip install -r requirements.txt
 ```
+
+### Requisito adicional
+
+- Python 3.10+
+- Cuenta de Google Earth Engine autenticada ([registro gratuito](https://earthengine.google.com/))
 
 ## Uso rápido
 
@@ -159,10 +163,11 @@ git clone https://github.com/djwillichile/geoia-bloom-huasco.git
 cd geoia-bloom-huasco
 ```
 
-2. Instalar dependencias:
+2. Crear entorno y activarlo:
 
 ```bash
-pip install -r requirements.txt
+conda env create -f environment.yml
+conda activate geoia-bloom-huasco
 ```
 
 3. Autenticarse en Earth Engine:
@@ -173,7 +178,7 @@ ee.Authenticate()
 ee.Initialize(project='tu-proyecto-gee')
 ```
 
-4. Abrir los notebooks en Google Colab o Jupyter:
+4. Abrir los notebooks en Jupyter o Google Colab:
 
 | Notebook | Colab |
 |---|---|
@@ -184,7 +189,27 @@ ee.Initialize(project='tu-proyecto-gee')
 
 El **Desierto Florido** es un fenómeno climático-ecológico que ocurre de forma esporádica en el desierto de Atacama, Chile. Se produce cuando precipitaciones inusuales activan el banco de semillas latente, generando una explosión de vegetación efímera que transforma el paisaje árido en extensas praderas floridas.
 
-Este proyecto utiliza el NDVI como proxy para detectar y cuantificar estos eventos de floración a escala de cuenca hidrográfica, proporcionando una perspectiva temporal de más de dos décadas (2000–2026).
+Este proyecto utiliza el NDVI como proxy para detectar y cuantificar estos eventos de floración a escala de cuenca hidrográfica, proporcionando una perspectiva temporal de más de dos décadas (2000–2026). Los resultados contribuyen al conocimiento de la respuesta de los ecosistemas áridos frente a la variabilidad climática, con implicaciones para la conservación de la biodiversidad del desierto de Atacama.
+
+## Cómo citar
+
+Si utilizas este repositorio en una publicación científica, cita usando la información del archivo [`CITATION.cff`](CITATION.cff):
+
+```
+Fuentes Jaque, G. (2025). geoia-bloom-huasco: Dinámica espacio-temporal
+del Desierto Florido en la cuenca del río Huasco (NDVI MODIS 2000–2026).
+GitHub. https://github.com/djwillichile/geoia-bloom-huasco
+```
+
+## Referencias clave
+
+- Didan, K. (2021). MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN Grid V061. NASA EOSDIS Land Processes DAAC. https://doi.org/10.5067/MODIS/MOD13Q1.061
+- Gorelick, N. et al. (2017). Google Earth Engine: Planetary-scale geospatial analysis for everyone. *Remote Sensing of Environment*, 202, 18–27. https://doi.org/10.1016/j.rse.2017.06.031
+- Vidiella, P.E., Armesto, J.J., & Gutiérrez, J.R. (1999). Vegetation changes and sequential flowering after rain in the southern Atacama Desert. *Journal of Arid Environments*, 43(4), 449–458. https://doi.org/10.1006/jare.1999.0563
+- Garreaud, R.D. & Rutllant, J. (2003). Factores climatológicos relevantes para el florecimiento del desierto en el norte de Chile. *Revista Chilena de Historia Natural*, 76, 611–628.
+- Farr, T.G. et al. (2007). The Shuttle Radar Topography Mission. *Reviews of Geophysics*, 45(2). https://doi.org/10.1029/2005RG000183
+
+> La bibliografía completa en formato BibTeX se encuentra en [`docs/references.bib`](docs/references.bib).
 
 ## Licencia
 
@@ -192,10 +217,10 @@ Este proyecto está licenciado bajo la [MIT License](LICENSE).
 
 ## Autor
 
-**Guillermo Fuentes Jaque**
-Científico de datos geoespaciales · Consultor ambiental · Docente universitario
+**Guillermo Fuentes Jaque**  
+Científico de datos geoespaciales · Consultor ambiental · Docente universitario  
 [GitHub: @djwillichile](https://github.com/djwillichile)
 
 ---
 
-> Proyecto desarrollado con Google Earth Engine, datos abiertos MODIS/NASA y herramientas de código abierto.
+> Proyecto desarrollado con Google Earth Engine, datos abiertos MODIS/NASA y herramientas de código abierto de Python.
