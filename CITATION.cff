@@ -17,7 +17,7 @@ authors:
   - family-names: Moreira-Muñoz
     given-names: Andrés
     affiliation: >-
-    Instituto de Geografía, Pontificia Universidad Católica de Valparaíso, Chile.
+      Instituto de Geografía, Pontificia Universidad Católica de Valparaíso, Chile.
 repository-code: https://github.com/djwillichile/geoia-bloom-huasco
 url: https://djwillichile.github.io/geoia-bloom-huasco/
 abstract: >-
@@ -54,8 +54,10 @@ preferred-citation:
     geoia-bloom-huasco: Dinámica espacio-temporal del Desierto Florido
     en la cuenca del río Huasco (NDVI MODIS 2000–2026)
   authors:
-    - family-names: Fuentes Jaque
-      given-names: Guillermo
+    - family-names: Fuentes-Jaque
+      given-names: Guillermo S.
+    - family-names: Moreira-Muñoz
+      given-names: Andrés
   year: 2025
   url: https://github.com/djwillichile/geoia-bloom-huasco
   repository-code: https://github.com/djwillichile/geoia-bloom-huasco
