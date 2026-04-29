@@ -1,0 +1,106 @@
+cff-version: 1.2.0
+message: >-
+  Si utilizas este repositorio en una publicación científica,
+  por favor cita el software usando los metadatos de este archivo.
+title: >-
+  geoia-bloom-huasco: Dinámica espacio-temporal del Desierto Florido
+  en la cuenca del río Huasco, Chile — Análisis con NDVI MODIS
+authors:
+  - family-names: Fuentes Jaque
+    given-names: Guillermo
+    orcid: https://orcid.org/0000-0000-0000-0000
+    affiliation: >-
+      Científico de datos geoespaciales · Consultor ambiental ·
+      Docente universitario
+    email: guillermo.f1990@gmail.com
+repository-code: https://github.com/djwillichile/geoia-bloom-huasco
+url: https://djwillichile.github.io/geoia-bloom-huasco/
+abstract: >-
+  Flujo de trabajo reproducible en Python para analizar la dinámica
+  espacio-temporal del fenómeno del Desierto Florido en la cuenca del
+  río Huasco (Región de Atacama, Chile). El análisis utiliza series
+  temporales de NDVI derivadas del producto MODIS MOD13Q1 (250 m,
+  16 días, 2000–2026) procesadas con Google Earth Engine. Se construye
+  una climatología estacional por slot16, se calculan anomalías de NDVI
+  como indicador de bloom, y se detectan y cuantifican eventos de
+  floración mediante suavizado Savitzky-Golay y detección de picos.
+  Incluye cartografía profesional del área de estudio.
+keywords:
+  - desierto florido
+  - Atacama Desert
+  - NDVI
+  - MODIS
+  - Google Earth Engine
+  - teledetección
+  - remote sensing
+  - fenología
+  - phenology
+  - cuenca del Huasco
+  - vegetación efímera
+  - bloom detection
+  - series temporales
+  - Chile
+license: MIT
+version: 1.0.0
+date-released: "2025-04-29"
+preferred-citation:
+  type: software
+  title: >-
+    geoia-bloom-huasco: Dinámica espacio-temporal del Desierto Florido
+    en la cuenca del río Huasco (NDVI MODIS 2000–2026)
+  authors:
+    - family-names: Fuentes Jaque
+      given-names: Guillermo
+  year: 2025
+  url: https://github.com/djwillichile/geoia-bloom-huasco
+  repository-code: https://github.com/djwillichile/geoia-bloom-huasco
+  license: MIT
+references:
+  - type: article
+    title: >-
+      MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN Grid V061
+    authors:
+      - family-names: Didan
+        given-names: Kamel
+    year: 2021
+    doi: 10.5067/MODIS/MOD13Q1.061
+  - type: article
+    title: >-
+      Google Earth Engine: Planetary-scale geospatial analysis for everyone
+    authors:
+      - family-names: Gorelick
+        given-names: Noel
+      - family-names: Hancher
+        given-names: Matt
+      - family-names: Dixon
+        given-names: Mike
+      - family-names: Ilyushchenko
+        given-names: Simon
+      - family-names: Thau
+        given-names: David
+      - family-names: Moore
+        given-names: Rebecca
+    year: 2017
+    journal: Remote Sensing of Environment
+    volume: 202
+    start: 18
+    end: 27
+    doi: 10.1016/j.rse.2017.06.031
+  - type: article
+    title: >-
+      Vegetation changes and sequential flowering after rain in the
+      southern Atacama Desert
+    authors:
+      - family-names: Vidiella
+        given-names: Pablo E.
+      - family-names: Armesto
+        given-names: Juan J.
+      - family-names: Gutiérrez
+        given-names: Julio R.
+    year: 1999
+    journal: Journal of Arid Environments
+    volume: 43
+    issue: 4
+    start: 449
+    end: 458
+    doi: 10.1006/jare.1999.0563

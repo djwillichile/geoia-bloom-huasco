@@ -1,0 +1,21 @@
+name: geoia-bloom-huasco
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - numpy>=1.24
+  - pandas>=2.0
+  - scipy>=1.10
+  - matplotlib>=3.7
+  - geopandas>=0.13
+  - cartopy>=0.21
+  - Pillow>=9.5
+  - ipywidgets>=8.0
+  - jupyter
+  - jupyterlab
+  - pip:
+    - earthengine-api>=0.1.370
+    - geemap>=0.30.0
+    - requests>=2.31.0
