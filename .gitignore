@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files (large)
+*.tif
+*.tiff
+*.nc
+*.hdf
+*.h5
+
+# Outputs temporales
+*.log
+*.tmp
+
+# Earth Engine credentials
+.config/earthengine/
+
+# Archivos grandes de datos (mantener solo CSV pequeños)
+data/*.zip
+data/*.tar.gz
