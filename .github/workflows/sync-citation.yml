@@ -1,0 +1,32 @@
+name: Sincronizar citación desde CITATION.cff
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - CITATION.cff
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar PyYAML
+        run: pip install pyyaml
+
+      - name: Actualizar citación en README e index.html
+        run: python scripts/update_citation.py
+
+      - name: Commit y push si hay cambios
+        run: |
+          git config user.name "djwillichile"
+          git config user.email "guillermo.f1990@gmail.com"
+          git add README.md index.html
+          git diff --staged --quiet || git commit -m "ci: actualiza sección 'Cómo citar' desde CITATION.cff"
+          git push
