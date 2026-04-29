@@ -8,6 +8,8 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/djwillichile/geoia-bloom-huasco/blob/main/notebooks/dinamica_bloom_huasco_ndvi.ipynb)
 [![Web](https://img.shields.io/badge/Web-GitHub%20Pages-222?logo=github)](https://djwillichile.github.io/geoia-bloom-huasco/)
 
+**Sitio web del proyecto:** https://djwillichile.github.io/geoia-bloom-huasco/
+
 ---
 
 ## Descripción
@@ -94,6 +96,10 @@ geoia-bloom-huasco/
 ├── .gitignore
 ├── requirements.txt                         # Dependencias pip
 ├── environment.yml                          # Entorno conda reproducible
+├── index.html                               # Sitio web del proyecto (GitHub Pages)
+├── .github/
+│   └── workflows/
+│       └── pages.yml                        # Despliegue automático GitHub Pages
 ├── notebooks/
 │   ├── dinamica_bloom_huasco_ndvi.ipynb     # Análisis principal de bloom
 │   └── cartografia_huasco_layout.ipynb      # Layout cartográfico profesional
