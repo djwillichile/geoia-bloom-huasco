@@ -6,13 +6,18 @@ title: >-
   geoia-bloom-huasco: Dinámica espacio-temporal del Desierto Florido
   en la cuenca del río Huasco, Chile — Análisis con NDVI MODIS
 authors:
-  - family-names: Fuentes Jaque
-    given-names: Guillermo
-    orcid: https://orcid.org/0000-0000-0000-0000
+  - family-names: Fuentes-Jaque
+    given-names: Guillermo S.
+    orcid: https://orcid.org/0000-0002-7864-4899
     affiliation: >-
-      Científico de datos geoespaciales · Consultor ambiental ·
-      Docente universitario
+      Instituto de Ciencias y Tecnología Ambiental ICTA Ltda., Chile.
+      Facultad de Ingeniería, Universidad San Sebastián. 
+      Científico de datos geoespaciales · Consultor ambiental · Docente universitario.
     email: guillermo.f1990@gmail.com
+  - family-names: Moreira-Muñoz
+    given-names: Andrés
+    affiliation: >-
+    Instituto de Geografía, Pontificia Universidad Católica de Valparaíso, Chile.
 repository-code: https://github.com/djwillichile/geoia-bloom-huasco
 url: https://djwillichile.github.io/geoia-bloom-huasco/
 abstract: >-
