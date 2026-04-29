@@ -8,6 +8,25 @@ import sys
 import yaml
 
 
+def extract_initials(given: str) -> str:
+    """'Guillermo S.' → 'G. S.'  |  'Andrés' → 'A.'"""
+    parts = given.split()
+    result = []
+    for part in parts:
+        if len(part) <= 2 and part.endswith("."):
+            result.append(part)
+        else:
+            result.append(part[0] + ".")
+    return " ".join(result)
+
+
+def format_author(author: dict) -> str:
+    family = author.get("family-names", "")
+    given = author.get("given-names", "")
+    initials = extract_initials(given) if given else ""
+    return f"{family}, {initials}" if initials else family
+
+
 def build_citation(data: dict) -> str:
     pref = data.get("preferred-citation", data)
 
@@ -16,14 +35,14 @@ def build_citation(data: dict) -> str:
     title = pref.get("title", data.get("title", "")).strip().replace("\n", " ")
     url = pref.get("url", pref.get("repository-code", data.get("url", "")))
 
-    if authors:
-        first = authors[0]
-        family = first.get("family-names", "")
-        given = first.get("given-names", "")
-        initial = given[0] + "." if given else ""
-        author_str = f"{family}, {initial} et al." if len(authors) > 1 else f"{family}, {initial}"
-    else:
+    if len(authors) == 0:
         author_str = ""
+    elif len(authors) == 1:
+        author_str = format_author(authors[0])
+    elif len(authors) == 2:
+        author_str = f"{format_author(authors[0])} & {format_author(authors[1])}"
+    else:
+        author_str = f"{format_author(authors[0])} et al."
 
     return f"{author_str} ({year}). {title}.\nGitHub. {url}"
 

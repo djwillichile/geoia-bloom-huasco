@@ -203,7 +203,7 @@ Si utilizas este repositorio en una publicación científica, cita usando la inf
 
 <!-- CITATION-START -->
 ```
-Fuentes Jaque, G. (2025). geoia-bloom-huasco: Dinámica espacio-temporal del Desierto Florido en la cuenca del río Huasco (NDVI MODIS 2000–2026).
+Fuentes-Jaque, G. S. & Moreira-Muñoz, A. (2025). geoia-bloom-huasco: Dinámica espacio-temporal del Desierto Florido en la cuenca del río Huasco (NDVI MODIS 2000–2026).
 GitHub. https://github.com/djwillichile/geoia-bloom-huasco
 ```
 <!-- CITATION-END -->
