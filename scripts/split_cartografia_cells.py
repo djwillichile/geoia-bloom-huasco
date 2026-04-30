@@ -6,28 +6,34 @@ Reorganiza cartografia_huasco_layout.ipynb:
   3. Elimina imports duplicados al inicio de la celda 12
   4. Divide la celda 12 en 4 celdas temáticas
 """
-import json, copy
+import json, uuid
 from pathlib import Path
 
 
-def make_code_cell(source: str) -> dict:
+def make_code_cell(source: str, cell_id: str = None) -> dict:
     lines = source.rstrip("\n").split("\n")
     src_list = [line + "\n" for line in lines]
     src_list[-1] = src_list[-1].rstrip("\n")
     return {
         "cell_type": "code",
         "execution_count": None,
+        "id": cell_id or uuid.uuid4().hex[:8],
         "metadata": {},
         "outputs": [],
         "source": src_list,
     }
 
 
-def make_markdown_cell(source: str) -> dict:
+def make_markdown_cell(source: str, cell_id: str = None) -> dict:
     lines = source.rstrip("\n").split("\n")
     src_list = [line + "\n" for line in lines]
     src_list[-1] = src_list[-1].rstrip("\n")
-    return {"cell_type": "markdown", "metadata": {}, "source": src_list}
+    return {
+        "cell_type": "markdown",
+        "id": cell_id or uuid.uuid4().hex[:8],
+        "metadata": {},
+        "source": src_list,
+    }
 
 
 path = Path("notebooks/cartografia_huasco_layout.ipynb")
@@ -93,8 +99,8 @@ except Exception:
     print('✅ Earth Engine inicializado tras autenticación.')"""
 
 # Reemplazar celda 5 con la de imports y agregar nueva celda de EE init
-cells[5] = make_code_cell(IMPORTS_CELL)
-cells.insert(6, make_code_cell(EE_INIT_CELL))
+cells[5] = make_code_cell(IMPORTS_CELL, cell_id="cell-imports")
+cells.insert(6, make_code_cell(EE_INIT_CELL, cell_id="cell-ee-init"))
 print("  ✓ Celda 5 dividida: imports | EE init (nueva celda 6)")
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -150,10 +156,10 @@ HEADER_C = """\
 HEADER_D = """\
 # ── Panel principal (DEM / NDVI) + título y créditos ─────────────────────────"""
 
-cell_A = make_code_cell(HEADER_A + "\n" + part_A)
-cell_B = make_code_cell(HEADER_B + "\n" + part_B)
-cell_C = make_code_cell(HEADER_C + "\n" + part_C)
-cell_D = make_code_cell(HEADER_D + "\n" + part_D)
+cell_A = make_code_cell(HEADER_A + "\n" + part_A, cell_id="cell-constants")
+cell_B = make_code_cell(HEADER_B + "\n" + part_B, cell_id="cell-helpers")
+cell_C = make_code_cell(HEADER_C + "\n" + part_C, cell_id="cell-panel-left")
+cell_D = make_code_cell(HEADER_D + "\n" + part_D, cell_id="cell-panel-main")
 
 # Reemplazar la celda grande por las 4 nuevas
 cells[IDX:IDX+1] = [cell_A, cell_B, cell_C, cell_D]
