@@ -1,0 +1,32 @@
+name: Extraer figuras del notebook cartográfico
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'notebooks/cartografia_huasco_layout.ipynb'
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Extraer imágenes de los outputs del notebook
+        run: python scripts/extract_figures.py
+
+      - name: Commit figuras actualizadas
+        run: |
+          git config user.name "djwillichile"
+          git config user.email "guillermo.f1990@gmail.com"
+          git add figures/
+          git diff --cached --quiet && echo "Sin cambios en figuras." || (
+            git commit -m "auto: actualizar figuras del mapa cartográfico" && git push
+          )
